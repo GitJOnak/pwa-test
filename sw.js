@@ -1,32 +1,29 @@
-const CACHE = 'pwa-html-cache-v1';
+const CACHE = 'pwa-static-v2'; // zmień nazwę = wymuszenie update
 
 self.addEventListener('install', event => {
   self.skipWaiting();
-  event.waitUntil(
-    caches.open(CACHE).then(cache =>
-      cache.addAll([
-        './',
-        './index.html',
-        './icon-192.png',
-        './icon-512.png'
-      ])
-    )
-  );
 });
 
 self.addEventListener('activate', event => {
-  event.waitUntil(self.clients.claim());
+  event.waitUntil(
+    caches.keys().then(keys =>
+      Promise.all(keys.map(k => caches.delete(k)))
+    )
+  );
+  self.clients.claim();
 });
 
 self.addEventListener('fetch', event => {
-  event.respondWith(
-    caches.match(event.request).then(res => res || fetch(event.request))
-  );
-});
-self.addEventListener('fetch', event => {
+  // ✅ HTML ZAWSZE Z SIECI
   if (event.request.mode === 'navigate') {
-    // ZAWSZE pobieraj HTML z sieci
     event.respondWith(fetch(event.request));
     return;
   }
+
+  // ✅ reszta (img, css, js) – cache first
+  event.respondWith(
+    caches.match(event.request).then(res =>
+      res || fetch(event.request)
+    )
+  );
 });
