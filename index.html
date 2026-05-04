@@ -82,6 +82,16 @@
       log('Standalone: ' + window.matchMedia('(display-mode: standalone)').matches);
       log('UserAgent: ' + navigator.userAgent);
     });
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    console.log('♻️ Nowy Service Worker aktywny – reload');
+    window.location.reload();
+  });
+}
+
+
+    
   </script>
 
 </body>
