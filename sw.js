@@ -1,7 +1,8 @@
-const CACHE = 'pwa-static-v2'; // zmień nazwę = wymuszenie update
+const VERSION = 'v3'; // ← ZMIENIAJ PRZY KAŻDEJ ZMIANIE
+const CACHE = 'pwa-static-' + VERSION;
 
 self.addEventListener('install', event => {
-  self.skipWaiting();
+  self.skipWaiting(); // ⬅ NOWY SW GOTOWY NATYCHMIAST
 });
 
 self.addEventListener('activate', event => {
@@ -10,20 +11,18 @@ self.addEventListener('activate', event => {
       Promise.all(keys.map(k => caches.delete(k)))
     )
   );
-  self.clients.claim();
+  self.clients.claim(); // ⬅ PRZEJMIJ WSZYSTKIE STRONY
 });
 
 self.addEventListener('fetch', event => {
   // ✅ HTML ZAWSZE Z SIECI
   if (event.request.mode === 'navigate') {
-    event.respondWith(fetch(event.request));
+    event.respondWith(fetch(event.request, { cache: 'no-store' }));
     return;
   }
 
-  // ✅ reszta (img, css, js) – cache first
+  // ✅ static assets – cache fallback
   event.respondWith(
-    caches.match(event.request).then(res =>
-      res || fetch(event.request)
-    )
+    caches.match(event.request).then(res => res || fetch(event.request))
   );
 });
