@@ -23,3 +23,10 @@ self.addEventListener('fetch', event => {
     caches.match(event.request).then(res => res || fetch(event.request))
   );
 });
+self.addEventListener('fetch', event => {
+  if (event.request.mode === 'navigate') {
+    // ZAWSZE pobieraj HTML z sieci
+    event.respondWith(fetch(event.request));
+    return;
+  }
+});
