@@ -1,4 +1,4 @@
-const VERSION = 'v3'; // ← ZMIENIAJ PRZY KAŻDEJ ZMIANIE
+const VERSION = 'v4'; // ← ZMIENIAJ PRZY KAŻDEJ ZMIANIE
 const CACHE = 'pwa-static-' + VERSION;
 
 self.addEventListener('install', event => {
