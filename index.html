@@ -1,63 +1,24 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-<meta charset="utf-8">
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>PWA – HTML Navigator</title>
+
+<title>PWA Test</title>
 
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#1976d2">
 
-<style>
-body {
-  font-family: sans-serif;
-  margin: 0;
-  padding: 10px;
-}
-button {
-  padding: 12px 18px;
-  font-size: 16px;
-}
-iframe {
-  width: 100%;
-  height: calc(100vh - 80px);
-  border: 1px solid #aaa;
-  margin-top: 10px;
-}
-</style>
 </head>
-
 <body>
 
-<button id="openFile">📂 Wybierz plik HTML</button>
-
-<iframe id="viewer"></iframe>
+<h1>PWA działa</h1>
 
 <script>
-const btn = document.getElementById('openFile');
-const iframe = document.getElementById('viewer');
-
-btn.addEventListener('click', async () => {
-  try {
-    const [fileHandle] = await window.showOpenFilePicker({
-      types: [{
-        description: 'HTML',
-        accept: { 'text/html': ['.html', '.htm'] }
-      }]
-    });
-
-    const file = await fileHandle.getFile();
-    const url = URL.createObjectURL(file);
-    iframe.src = url;
-
-  } catch (e) {
-    console.log('Anulowano wybór pliku');
-  }
-});
-
-// rejestracja Service Workera
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('sw.js');
+  navigator.serviceWorker.register('./sw.js')
+    .then(reg => console.log('SW OK', reg.scope))
+    .catch(err => console.error('SW BŁĄD', err));
 }
 </script>
 
