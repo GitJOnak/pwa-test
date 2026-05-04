@@ -8,6 +8,16 @@
 
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#1976d2">
+<button id="installBtn" style="
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  font-size: 18px;
+  padding: 12px 20px;
+  display: none;
+">
+Zainstaluj aplikację
+</button>
 
 </head>
 <body>
@@ -21,6 +31,40 @@ if ('serviceWorker' in navigator) {
     .catch(err => console.error('SW BŁĄD', err));
 }
 </script>
+<script>
+let deferredPrompt = null;
 
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  document.getElementById('installBtn').style.display = 'block';
+  console.log('✅ beforeinstallprompt FIRED');
+});
+
+document.getElementById('installBtn').addEventListener('click', async () => {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  const { outcome } = await deferredPrompt.userChoice;
+  console.log('Install outcome:', outcome);
+  deferredPrompt = null;
+});
+</script><script>
+let deferredPrompt = null;
+
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  document.getElementById('installBtn').style.display = 'block';
+  console.log('✅ beforeinstallprompt FIRED');
+});
+
+document.getElementById('installBtn').addEventListener('click', async () => {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  const { outcome } = await deferredPrompt.userChoice;
+  console.log('Install outcome:', outcome);
+  deferredPrompt = null;
+});
+</script>
 </body>
 </html>
