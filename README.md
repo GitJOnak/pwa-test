@@ -1,2 +1,2 @@
 # pwa-test
-Konto dla teswtów aplikacji1
+Konto dla teswtów aplikacji2
