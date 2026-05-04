@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>PWA Test1</title>
+
+  <!-- MANIFEST – KLUCZOWY -->
+<link rel="manifest" href="manifest.json">
+
+  <meta name="theme-color" content="#1976d2">
+  <!-- PRZYCISK INSTALACJI -->
+  <button 
+    id="installBtn"
+    style="
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      padding: 14px 20px;
+      font-size: 16px;
+      display: none;
+    ">
+    Zainstaluj aplikację
+  </button>
+
+  
+</head>
+
+<body>
+
+  <h1>PWA działa1</h1>
+  <p>Test instalacji PWA – GitHub Pages</p>
+
+
+
+  <pre id="log" style="margin-top:40px; font-size:12px;"></pre>
+
+  <script>
+    function log(msg) {
+      document.getElementById('log').textContent += msg + '\n';
+      console.log(msg);
+    }
+
+    // 1. SERVICE WORKER
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./sw.js')
+        .then(reg => {
+          log('✅ Service Worker zarejestrowany');
+          log('   scope: ' + reg.scope);
+        })
+        .catch(err => log('❌ Błąd SW: ' + err));
+    } else {
+      log('❌ Brak Service Worker API');
+    }
+
+    // 2. OBSŁUGA INSTALACJI PWA
+    let deferredPrompt = null;
+
+    window.addEventListener('beforeinstallprompt', e => {
+      log('✅ beforeinstallprompt fired');
+      e.preventDefault();
+      deferredPrompt = e;
+      document.getElementById('installBtn').style.display = 'block';
+    });
+
+    document.getElementById('installBtn').addEventListener('click', async () => {
+      if (!deferredPrompt) {
+        log('❌ Brak deferredPrompt');
+        return;
+      }
+
+      deferredPrompt.prompt();
+      const result = await deferredPrompt.userChoice;
+      log('📦 Wynik instalacji: ' + result.outcome);
+      deferredPrompt = null;
+    });
+
+    // 3. INFO DIAGNOSTYCZNE
+    window.addEventListener('load', () => {
+      log('--- INFO ---');
+      log('Standalone: ' + window.matchMedia('(display-mode: standalone)').matches);
+      log('UserAgent: ' + navigator.userAgent);
+    });
+  </script>
+
+</body>
+</html>
