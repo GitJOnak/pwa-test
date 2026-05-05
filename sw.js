@@ -3,9 +3,7 @@ const CACHE = 'pwa-static-' + VERSION;
 
 // ❌ TE PLIKI NIGDY NIE SĄ CACHE'OWANE
 const NO_CACHE = [
-  '/icon-192.png',
-  '/icon-512.png',
-  '/icon-512-maskable.png'
+  '/icon-192.png' 
 ];
 
 // instalacja
