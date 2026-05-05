@@ -1,4 +1,4 @@
-const VERSION = 'v6'; // ← ZMIEŃ ZA KAŻDYM RAZEM
+const VERSION = 'v7'; // ← ZMIEŃ ZA KAŻDYM RAZEM
 const CACHE = 'pwa-static-' + VERSION;
 
 // ❌ TE PLIKI NIGDY NIE SĄ CACHE'OWANE
