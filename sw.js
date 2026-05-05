@@ -1,28 +1,38 @@
-const VERSION = 'v5'; // ← ZMIENIAJ PRZY KAŻDEJ ZMIANIE
+const VERSION = 'v6'; // ← ZMIEŃ ZA KAŻDYM RAZEM
 const CACHE = 'pwa-static-' + VERSION;
 
+// ❌ TE PLIKI NIGDY NIE SĄ CACHE'OWANE
+const NO_CACHE = [
+  '/icon-192.png',
+  '/icon-512.png',
+  '/icon-512-maskable.png'
+];
+
+// instalacja
 self.addEventListener('install', event => {
-  self.skipWaiting(); // ⬅ NOWY SW GOTOWY NATYCHMIAST
+  console.log('[SW] install', VERSION);
+  self.skipWaiting();
 });
 
+// aktywacja – czyścimy stare cache
 self.addEventListener('activate', event => {
+  console.log('[SW] activate');
   event.waitUntil(
     caches.keys().then(keys =>
-      Promise.all(keys.map(k => caches.delete(k)))
+      Promise.all(
+        keys
+          .filter(k => k !== CACHE)
+          .map(k => caches.delete(k))
+      )
     )
   );
-  self.clients.claim(); // ⬅ PRZEJMIJ WSZYSTKIE STRONY
+  self.clients.claim();
 });
 
+// obsługa fetch
 self.addEventListener('fetch', event => {
-  // ✅ HTML ZAWSZE Z SIECI
-  if (event.request.mode === 'navigate') {
-    event.respondWith(fetch(event.request, { cache: 'no-store' }));
-    return;
-  }
+  const req = event.request;
+  const url = new URL(req.url);
 
-  // ✅ static assets – cache fallback
-  event.respondWith(
-    caches.match(event.request).then(res => res || fetch(event.request))
-  );
-});
+  // ✅ HTML / nawigacja – ZAWSZE Z SIECI
+  if (req.mode === 'navigate') {
