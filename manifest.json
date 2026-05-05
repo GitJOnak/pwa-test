@@ -1,7 +1,7 @@
 {
   "name": "HTML Navigator",
   "short_name": "HTML Navi",
-  "start_url": "./",
+ "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "background_color": "#ffffff",
